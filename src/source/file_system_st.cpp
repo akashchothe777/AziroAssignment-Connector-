@@ -9,8 +9,8 @@ bool FileSystemST::DownloadFile(std::string file_name, std::string data_folder)
 {
     std::cout << "In FileSystemST::DownloadFile()" << std::endl;
 
-    std::string source_file = address + "\\" + file_name;
-    std::string dest_file = data_folder + "\\" + file_name;
+    std::string source_file = address + "//" + file_name;
+    std::string dest_file = data_folder + "//" + file_name;
 
     std::cout << "Source = " << source_file
                 << "\tDestination = " << dest_file << std::endl;
@@ -27,7 +27,7 @@ bool FileSystemST::DownloadFile(std::string file_name, std::string data_folder)
 std::vector<FileDetails> FileSystemST::GetFilesDetails()
 {
     std::vector<FileDetails> files;
-    for (const auto& entry : fs::directory_iterator("D://Assessment//Connector1//SourceFolder")) 
+    for (const auto& entry : fs::directory_iterator("D:\\Assessment\\Connector1\\SourceFolder")) 
     {
         FileDetails file;
         static unsigned long file_id = 1;

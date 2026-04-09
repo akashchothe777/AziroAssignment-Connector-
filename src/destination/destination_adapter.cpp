@@ -13,7 +13,6 @@ bool DestinationAdapter::UploadFiles(std::string data_folder)
         if (fs::is_regular_file(itr.path())) 
         {
             destination_type->UploadFile(itr.path());
-            //FileMetadataUtils::UpdateFileMetadata(itr.path().filename(), );
         }
     }
 
