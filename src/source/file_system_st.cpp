@@ -1,6 +1,7 @@
-#include "../../include/source/file_system_st.h"
-#include <filesystem>
+#include "source/file_system_st.h"
 #include <iostream>
+#include <filesystem>
+#include "metadata/file_metadata_utils.h"
 
 namespace fs = std::filesystem;
 
@@ -33,6 +34,8 @@ std::vector<FileDetails> FileSystemST::GetFilesDetails()
         file.id = file_id++;
         file.name = entry.path().filename().string();
         file.size = fs::file_size(entry.path());
+
+        file.last_modified_time = FileMetadataUtils::GetLastModifiedDateTime(entry.path());
 
         files.push_back(file);
     }

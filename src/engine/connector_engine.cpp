@@ -1,5 +1,5 @@
-#include "../../include/engine/connector_engine.h"
-#include "../../include/metadata/file_metadata_utils.h"
+#include "engine/connector_engine.h"
+#include "metadata/file_metadata_utils.h"
 #include <iostream>
 
 void ConnectorEngine::run()
@@ -13,4 +13,6 @@ void ConnectorEngine::run()
     source_adapter.DownloadFiles(files_to_download, data_folder);
 
     destination_adapter.UploadFiles(data_folder);
+
+    std::cout << "file_metadata.size() = " << FileMetadataUtils::files_metadata.size() << std::endl;
 }

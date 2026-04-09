@@ -1,4 +1,4 @@
-#include "../../include/source/source_adapter.h"
+#include "source/source_adapter.h"
 #include <iostream>
 
 bool SourceAdapter::DownloadFiles(std::vector<FileDetails> files, std::string data_folder)

@@ -3,6 +3,8 @@ project(Connector VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include_directories("D:\\Assessment\\Connector1\\include")
+
 add_executable(Connector
              main.cpp
              src/destination/destination_adapter.cpp

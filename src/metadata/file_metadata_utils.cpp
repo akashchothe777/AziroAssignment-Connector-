@@ -1,4 +1,4 @@
-#include "../../include/metadata/file_metadata_utils.h"
+#include "metadata/file_metadata_utils.h"
 #include <iostream>
 #include <algorithm>
 
@@ -35,6 +35,25 @@ bool FileMetadataUtils::IsNew(const FileDetails& file)
     }
 
     return is_new;
+}
+
+
+std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p) {
+    auto ftime = fs::last_write_time(p); 
+    auto sctp = std::chrono::system_clock::now()
+              + (ftime - fs::file_time_type::clock::now());
+    std::time_t tt = std::chrono::system_clock::to_time_t(sctp);
+
+    std::tm tm;
+#if defined(_WIN32)
+    localtime_s(&tm, &tt);
+#else
+    localtime_r(&tt, &tm);
+#endif
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
+    return oss.str();
 }
 
 std::vector<FileDetails> FileMetadataUtils::GetListOfFilesToDownload(std::vector<FileDetails> available_files)
