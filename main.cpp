@@ -10,7 +10,11 @@ int main(int argc, char* argv[]){
 
     std::cout << "Number of arguments : " << argc << std::endl;
     if(argc < 3)
+    {
         std::cout << "Error : Insufficient number of arguments!" << std::endl;
+        return 1;
+    }
+    
     std::string source_folder = argv[1];
     std::string destination_folder = argv[2];
     std::cout << "Source folder = " << source_folder << std::endl;
@@ -26,12 +30,12 @@ int main(int argc, char* argv[]){
             std::cerr << "Error: Could not create file \"" << json_file << "\".\n";
             return 1;
         }
-        outfile << "This is a newly created file.\n"; // Optional initial content
+        outfile << "This is a newly created file.\n";
         outfile.close();
     }
     else
     {
-        json_handler.loadFromFile(FileMetadataUtils::files_metadata);
+        json_handler.loadFromFile(FileMetadataUtils::filepath_to_metadata);
     }
 
     std::shared_ptr<SourceType> source_type = std::make_shared<FileSystemST>(source_folder);
@@ -43,7 +47,7 @@ int main(int argc, char* argv[]){
     ConnectorEngine connector_engine(sa, da);
     connector_engine.run();
 
-    json_handler.saveToFile(FileMetadataUtils::files_metadata);
+    json_handler.saveToFile(FileMetadataUtils::filepath_to_metadata);
 
     return 0;
 }

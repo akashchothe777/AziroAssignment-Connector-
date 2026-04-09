@@ -6,7 +6,7 @@
 
 struct FileMetadata
 {
-    unsigned long id;
+    std::string path;
     std::string name;
     std::string last_modified_time;
     unsigned long long size;
@@ -15,13 +15,13 @@ struct FileMetadata
 
     FileMetadata(){}
 
-    FileMetadata(unsigned long _id,
+    FileMetadata(std::string _path,
     std::string _name,
     std::string _last_modified_time,
     unsigned long long _size,
     std::string _last_backup_time,
     std::string _destination_path) :
-        id(_id), name(_name), last_modified_time(_last_modified_time), 
+        path(_path), name(_name), last_modified_time(_last_modified_time), 
         size(_size), last_backup_time(_last_backup_time), destination_path(_destination_path){}
 };
 

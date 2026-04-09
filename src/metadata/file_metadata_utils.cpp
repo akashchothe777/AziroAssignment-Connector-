@@ -2,22 +2,22 @@
 #include <iostream>
 #include <algorithm>
 
-std::vector<FileMetadata> FileMetadataUtils::files_metadata{};
+std::map<std::string, FileMetadata> FileMetadataUtils::filepath_to_metadata{};
 
 bool FileMetadataUtils::IsModified(const FileDetails& file)
 {
     bool is_modified{false};
-    for(const FileMetadata& file_itr : files_metadata)
-    {
-        if(file_itr.id == file.id)
-        {
-            if(file_itr.last_modified_time != file.last_modified_time)
-            {
-                is_modified = true;
-            }
-            break;
-        }
-    }
+    // for(const FileMetadata& file_itr : files_metadata)
+    // {
+    //     if(file_itr.id == file.id)
+    //     {
+    //         if(file_itr.last_modified_time != file.last_modified_time)
+    //         {
+    //             is_modified = true;
+    //         }
+    //         break;
+    //     }
+    // }
 
     return is_modified;
 }
@@ -25,14 +25,14 @@ bool FileMetadataUtils::IsModified(const FileDetails& file)
 bool FileMetadataUtils::IsNew(const FileDetails& file)
 {
     bool is_new{true};
-    for(const FileMetadata& file_itr : files_metadata)
-    {
-        if(file_itr.id == file.id)
-        {
-            is_new = false;
-            break;
-        }
-    }
+    // for(const FileMetadata& file_itr : files_metadata)
+    // {
+    //     if(file_itr.id == file.id)
+    //     {
+    //         is_new = false;
+    //         break;
+    //     }
+    // }
 
     return is_new;
 }
@@ -64,7 +64,8 @@ std::vector<FileDetails> FileMetadataUtils::GetListOfFilesToDownload(std::vector
     {
         if(IsNew(itr))
         {
-            files_metadata.emplace_back(itr.id, itr.name, itr.last_modified_time, itr.size, "", "");
+            //files_metadata.emplace_back(itr.file_path, itr.name, itr.last_modified_time, itr.size, "", "");
+            filepath_to_metadata[itr.file_path] = FileMetadata(itr.file_path, itr.name, itr.last_modified_time, itr.size, "", "");
             files_to_download.push_back(itr);
         }
         else if(IsModified(itr))
@@ -75,6 +76,7 @@ std::vector<FileDetails> FileMetadataUtils::GetListOfFilesToDownload(std::vector
 
             // element_to_update->last_modified_time = itr.last_modified_time;
             files_to_download.push_back(itr);
+
         }
     }
     

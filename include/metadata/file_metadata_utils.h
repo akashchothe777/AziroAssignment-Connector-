@@ -9,13 +9,14 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <map>
 
 namespace fs = std::filesystem;
 
 class FileMetadataUtils
 {
 public:
-    static std::vector<FileMetadata> files_metadata;
+    static std::map<std::string, FileMetadata> filepath_to_metadata;
     static bool IsModified(const FileDetails& file);
     static bool IsNew(const FileDetails& file);
     static std::string GetLastModifiedDateTime(const fs::path& p);

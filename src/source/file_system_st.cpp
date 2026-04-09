@@ -31,7 +31,8 @@ std::vector<FileDetails> FileSystemST::GetFilesDetails()
     {
         FileDetails file;
         static unsigned long file_id = 1;
-        file.id = file_id++;
+        //file.id = file_id++;
+        file.file_path = entry.path().string();
         file.name = entry.path().filename().string();
         file.size = fs::file_size(entry.path());
 

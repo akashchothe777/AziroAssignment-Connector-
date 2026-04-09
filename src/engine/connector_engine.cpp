@@ -13,6 +13,4 @@ void ConnectorEngine::run()
     source_adapter.DownloadFiles(files_to_download, data_folder);
 
     destination_adapter.UploadFiles(data_folder);
-
-    std::cout << "file_metadata.size() = " << FileMetadataUtils::files_metadata.size() << std::endl;
 }

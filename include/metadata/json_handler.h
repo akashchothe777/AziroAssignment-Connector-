@@ -44,14 +44,14 @@ public:
     JsonHandler(std::string filename) : json_file_name(filename){};
 
     /** Serialize to JSON string. */
-    std::string toJsonString(std::vector<FileMetadata>& items_, bool pretty = true) const 
+    std::string toJsonString(std::map<std::string, FileMetadata>& items_, bool pretty = true) const 
     {
         json j = items_;
         return pretty ? j.dump(2) : j.dump();
     }
 
     /** Save to file. Throws std::runtime_error on failure. */
-    void saveToFile(std::vector<FileMetadata>& items_, bool pretty = true) const 
+    void saveToFile(std::map<std::string, FileMetadata>& items_, bool pretty = true) const 
     {
         std::ofstream ofs(json_file_name, std::ios::binary);
         if (!ofs) throw std::runtime_error("Failed to open file for writing: " + json_file_name);
@@ -60,7 +60,7 @@ public:
     }
 
     /** Load from file. Throws std::runtime_error on failure or parse error. */
-    void loadFromFile(std::vector<FileMetadata>& items_) 
+    void loadFromFile(std::map<std::string, FileMetadata>& items_) 
     {
         std::ifstream ifs(json_file_name, std::ios::binary);
         if (!ifs) throw std::runtime_error("Failed to open file for reading: " + json_file_name);
@@ -73,12 +73,9 @@ public:
         {
             throw std::runtime_error(std::string("JSON parse error: ") + e.what());
         }
-        if (!j.is_array()) throw std::runtime_error("Expected JSON array at top level.");
+        //if (!j.is()) throw std::runtime_error("Expected JSON array at top level.");
         items_.clear();
-        for (const auto& el : j) 
-        {
-            items_.push_back(el.get<FileMetadata>());
-        }
+        items_ = j.get<std::map<std::string, FileMetadata>>();
     }
 };
 

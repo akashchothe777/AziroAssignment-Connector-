@@ -5,7 +5,7 @@
 
 struct FileDetails
 {
-    unsigned long id;
+    std::string file_path;
     std::string name;
     std::string last_modified_time;
     unsigned long long size;
