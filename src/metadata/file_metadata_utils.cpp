@@ -6,6 +6,8 @@ std::map<std::string, FileMetadata> FileMetadataUtils::filepath_to_metadata{};
 
 bool FileMetadataUtils::IsModified(const FileDetails& file)
 {
+    std::cout << "In FileMetadataUtils::IsModified()" << std::endl;
+    
     bool is_modified{false};
     for(const auto& file_to_md_itr : filepath_to_metadata)
     {
@@ -24,6 +26,7 @@ bool FileMetadataUtils::IsModified(const FileDetails& file)
 
 bool FileMetadataUtils::IsNew(const FileDetails& file)
 {
+    std::cout << "In FileMetadataUtils::IsNew()" << std::endl;
     bool is_new{true};
     for(const auto& file_to_md_itr : filepath_to_metadata)
     {
@@ -38,7 +41,9 @@ bool FileMetadataUtils::IsNew(const FileDetails& file)
 }
 
 
-std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p) {
+std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p) 
+{
+    std::cout << "In FileMetadataUtils::GetLastModifiedDateTime()" << std::endl;
     auto ftime = fs::last_write_time(p); 
     auto sctp = std::chrono::system_clock::now()
               + (ftime - fs::file_time_type::clock::now());

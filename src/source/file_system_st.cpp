@@ -12,20 +12,21 @@ bool FileSystemST::DownloadFile(std::string file_name, std::string data_folder)
     std::string source_file = address + "//" + file_name;
     std::string dest_file = data_folder + "//" + file_name;
 
-    std::cout << "Source = " << source_file
-                << "\tDestination = " << dest_file << std::endl;
-
     std::filesystem::copy_file(
             source_file,
             dest_file,
             std::filesystem::copy_options::overwrite_existing
         );
 
+    std::cout << "File copied from Source = " << source_file
+                << " to Destination = " << dest_file << std::endl;
+
     return false;
 }
 
 std::vector<FileDetails> FileSystemST::GetFilesDetails()
 {
+    std::cout << "In FileSystemST::GetFilesDetails()" << std::endl;
     std::vector<FileDetails> files;
     for (const auto& entry : fs::directory_iterator("D:\\Assessment\\Connector1\\SourceFolder")) 
     {

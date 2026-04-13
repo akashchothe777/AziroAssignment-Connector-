@@ -8,6 +8,8 @@ namespace fs = std::filesystem;
 
 bool FileSystemDT::UploadFile(fs::path file_path)
 {
+    std::cout << "In FileSystemDT::UploadFile()" << std::endl;
+
     bool result = false;
     if (!fs::exists(address)) 
     {
@@ -24,6 +26,8 @@ bool FileSystemDT::UploadFile(fs::path file_path)
             FileMetadataUtils::UpdateFileMetadata(file_path, destPath);
 
             fs::remove(file_path);
+            std::cout << "Copied file " << file_path << " to the destination folder "
+                << address << std::endl;
         }
         else
         {

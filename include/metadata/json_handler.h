@@ -57,6 +57,7 @@ public:
         if (!ofs) throw std::runtime_error("Failed to open file for writing: " + json_file_name);
         ofs << toJsonString(items_, pretty);
         if (!ofs) throw std::runtime_error("Failed to write JSON to file: " + json_file_name);
+        std::cout << "Saved metadata to file: " << json_file_name << std::endl;
     }
 
     /** Load from file. Throws std::runtime_error on failure or parse error. */
