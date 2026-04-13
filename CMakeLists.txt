@@ -4,8 +4,8 @@ project(Connector VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
-    "D:\\Assessment\\Connector1\\include")
-# "C:\\curl\\include")
+    "D:\\Assessment\\Connector1\\include"
+    "C:\\curl\\include")
 
 add_executable(Connector
              main.cpp
@@ -17,11 +17,13 @@ add_executable(Connector
              src/source/source_adapter.cpp
              src/metadata/file_metadata_utils.cpp)
 
-# target_link_directories(Connector PRIVATE "C:/curl/lib")
+target_link_directories(Connector PRIVATE "D:/Downloads/curl-8.19.0/lib")
 
-# target_link_libraries(Connector PRIVATE libcurl)
+target_link_libraries(Connector PRIVATE "D:/Downloads/curl-8.19.0/lib/libcurl.dll.a")
 
-add_executable(unit_tests test.cpp)
+add_executable(unit_tests 
+                tests/test_file_metadata_utils.cpp
+                src/metadata/file_metadata_utils.cpp)
 
 target_link_libraries(unit_tests gtest gtest_main)
 

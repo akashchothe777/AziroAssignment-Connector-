@@ -35,7 +35,15 @@ int main(int argc, char* argv[]){
     }
     else
     {
-        json_handler.loadFromFile(FileMetadataUtils::filepath_to_metadata);
+        try
+        {
+            json_handler.loadFromFile(FileMetadataUtils::filepath_to_metadata);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return 1;
+        }
     }
 
     std::shared_ptr<SourceType> source_type = std::make_shared<FileSystemST>(source_folder);

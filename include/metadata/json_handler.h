@@ -73,6 +73,10 @@ public:
         {
             throw std::runtime_error(std::string("JSON parse error: ") + e.what());
         }
+        catch (const json::exception& e)
+        {
+            throw std::runtime_error(std::string("JSON error: ") + e.what());
+        }
         //if (!j.is()) throw std::runtime_error("Expected JSON array at top level.");
         items_.clear();
         items_ = j.get<std::map<std::string, FileMetadata>>();

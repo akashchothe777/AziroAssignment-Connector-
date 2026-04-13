@@ -3,6 +3,7 @@
 
 bool SourceAdapter::DownloadFiles(std::vector<FileDetails> files, std::string data_folder)
 {
+    std::cout << "In SourceAdapter::DownloadFiles()" << std::endl;
     for(const auto& file: files)
     {
         if(source_type->DownloadFile(file.name, data_folder))
