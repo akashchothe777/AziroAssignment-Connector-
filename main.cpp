@@ -24,6 +24,11 @@ int main(int argc, char* argv[])
     ConnectorConfig conn_config(config_file);
 
     std::string metadata_file = conn_config.get<std::string>("metadata_file", "D:\\Assessment\\Connector1\\md\\metadata_store.json");
+    std::string source_folder = conn_config.get<std::string>("source", "D:\\Assessment\\Connector1\\SourceFolder");
+    std::string destination_folder = conn_config.get<std::string>("destination", "D:\\Assessment\\Connector1\\DestinationFolder");
+    std::string download_folder = conn_config.get<std::string>("download_folder", "D:\\Assessment\\Connector1\\DataFolder");
+    unsigned int retry_count = conn_config.get<int>("retry_count", 3);
+
     JsonHandler json_handler(metadata_file);
 
     if (!fs::exists(metadata_file)) 
@@ -48,11 +53,6 @@ int main(int argc, char* argv[])
             return 1;
         }
     }
-
-    std::string source_folder = conn_config.get<std::string>("source", "D:\\Assessment\\Connector1\\SourceFolder");
-    std::string destination_folder = conn_config.get<std::string>("destination", "D:\\Assessment\\Connector1\\DestinationFolder");
-    std::string download_folder = conn_config.get<std::string>("download_folder", "D:\\Assessment\\Connector1\\DataFolder");
-    unsigned int retry_count = conn_config.get<int>("retry_count", 3);
 
     std::shared_ptr<SourceType> source_type = std::make_shared<FileSystemST>(source_folder);
     //std::shared_ptr<SourceType> source_type = std::make_shared<SharePointST>();
