@@ -21,7 +21,7 @@ public:
     static bool IsNew(const FileDetails& file);
     static std::string GetLastModifiedDateTime(const fs::path& p);
     static std::vector<FileDetails> GetListOfFilesToDownload(std::vector<FileDetails> available_files);
-    static void UpdateFileMetadata(fs::path file_path, fs::path dest_file_path);
+    static void UpdateFileMetadataForUpload(fs::path file_path, fs::path dest_file_path);
 };
 
 #endif // FILE_METADATA_UTILS_H

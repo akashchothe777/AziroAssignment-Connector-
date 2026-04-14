@@ -1,18 +1,26 @@
 #include "source/source_adapter.h"
 #include <iostream>
+#include "utils/utils.h"
 
-bool SourceAdapter::DownloadFiles(std::vector<FileDetails> files, std::string data_folder)
+bool SourceAdapter::DownloadFiles(std::vector<FileDetails> files, std::string download_folder)
 {
     std::cout << "In SourceAdapter::DownloadFiles()" << std::endl;
+    bool all_success{true};
+
     for(const auto& file: files)
     {
-        if(source_type->DownloadFile(file.name, data_folder))
+        bool success = ConnectorUtils::RetryFunction([&](){
+            return source_type->DownloadFile(file.name, download_folder);
+        }, retry_count);
+
+        if(!success)
         {
-            return false;
+            std::cout << "Failed to download file: " << file.file_path << std::endl;
+            all_success = false;
         }
     }
 
-    return true;
+    return all_success;
 }
 
 std::vector<FileDetails> SourceAdapter::GetFileList()

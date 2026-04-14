@@ -10,7 +10,7 @@ void ConnectorEngine::run()
 
     auto files_to_download = FileMetadataUtils::GetListOfFilesToDownload(available_files);
 
-    source_adapter.DownloadFiles(files_to_download, data_folder);
+    source_adapter.DownloadFiles(files_to_download, download_folder);
 
-    destination_adapter.UploadFiles(data_folder);
+    destination_adapter.UploadFiles(download_folder);
 }

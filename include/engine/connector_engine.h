@@ -7,13 +7,13 @@
 
 class ConnectorEngine
 {
-    std::string data_folder{"D:\\Assessment\\Connector1\\DataFolder"};
     SourceAdapter source_adapter;
     DestinationAdapter destination_adapter;
+    std::string download_folder;
 public:
     void run();
-    ConnectorEngine(SourceAdapter sa, DestinationAdapter da) :
-                        source_adapter(sa), destination_adapter(da)
+    ConnectorEngine(SourceAdapter sa, DestinationAdapter da, std::string df) :
+                        source_adapter(sa), destination_adapter(da), download_folder(df)
     {};
     ~ConnectorEngine(){};
 };

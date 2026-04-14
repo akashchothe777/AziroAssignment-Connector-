@@ -7,7 +7,7 @@ std::map<std::string, FileMetadata> FileMetadataUtils::filepath_to_metadata{};
 bool FileMetadataUtils::IsModified(const FileDetails& file)
 {
     std::cout << "In FileMetadataUtils::IsModified()" << std::endl;
-    
+
     bool is_modified{false};
     for(const auto& file_to_md_itr : filepath_to_metadata)
     {
@@ -69,12 +69,12 @@ std::vector<FileDetails> FileMetadataUtils::GetListOfFilesToDownload(std::vector
     {
         if(IsNew(itr))
         {
-            //files_metadata.emplace_back(itr.file_path, itr.name, itr.last_modified_time, itr.size, "", "");
             filepath_to_metadata[itr.file_path] = FileMetadata(itr.file_path, itr.name, itr.last_modified_time, itr.size, "", "");
             files_to_download.push_back(itr);
         }
         else if(IsModified(itr))
         {
+            filepath_to_metadata[itr.file_path].last_modified_time = itr.last_modified_time;
             files_to_download.push_back(itr);
         }
     }
@@ -103,7 +103,7 @@ std::string getCurrentTimeString() {
     return oss.str();
 }
 
-void FileMetadataUtils::UpdateFileMetadata(fs::path file_path, fs::path dest_file_path)
+void FileMetadataUtils::UpdateFileMetadataForUpload(fs::path file_path, fs::path dest_file_path)
 {
     auto itr = std::find_if(filepath_to_metadata.begin(), filepath_to_metadata.end(), [=](const auto& item){
         return (item.second.name == file_path.filename().string());

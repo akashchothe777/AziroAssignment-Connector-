@@ -23,7 +23,7 @@ bool FileSystemDT::UploadFile(fs::path file_path)
         if(fs::copy_file(file_path, destPath, fs::copy_options::overwrite_existing))
         {
             result = true;
-            FileMetadataUtils::UpdateFileMetadata(file_path, destPath);
+            FileMetadataUtils::UpdateFileMetadataForUpload(file_path, destPath);
 
             fs::remove(file_path);
             std::cout << "Copied file " << file_path << " to the destination folder "

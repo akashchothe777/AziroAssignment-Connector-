@@ -6,7 +6,7 @@
 class SharePointST : public SourceType
 {
 public:
-    bool DownloadFile(std::string file_name, std::string data_folder);
+    bool DownloadFile(std::string file_name, std::string download_folder);
     std::vector<FileDetails> GetFilesDetails();
 };
 

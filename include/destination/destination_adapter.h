@@ -10,9 +10,10 @@ class DestinationAdapter
 {
 private:
     std::shared_ptr<DestinationType> destination_type;
+    unsigned int retry_count;
 public:
-    bool UploadFiles(std::string data_folder);
-    DestinationAdapter(std::shared_ptr<DestinationType> dt) : destination_type(dt){};
+    DestinationAdapter(std::shared_ptr<DestinationType> dt, unsigned int rc) : destination_type(dt), retry_count(rc){};
+    bool UploadFiles(std::string download_folder);
     ~DestinationAdapter(){};
 };
 

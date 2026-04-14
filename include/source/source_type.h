@@ -8,7 +8,7 @@
 class SourceType
 {
     public:
-    virtual bool DownloadFile(std::string file_name, std::string data_folder) = 0;
+    virtual bool DownloadFile(std::string file_name, std::string download_folder) = 0;
     virtual std::vector<FileDetails> GetFilesDetails() = 0;
 };
 

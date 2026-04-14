@@ -7,7 +7,7 @@
 using json = nlohmann::json;
 using namespace std;
 
-bool SharePointST::DownloadFile(std::string file_name, std::string data_folder)
+bool SharePointST::DownloadFile(std::string file_name, std::string download_folder)
 {
     std::cout << "In SharePointST::DownloadFile()" << std::endl;
     CURL* curl = curl_easy_init();
