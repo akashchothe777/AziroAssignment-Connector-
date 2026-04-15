@@ -6,7 +6,7 @@ std::unordered_map<std::string, FileMetadata> FileMetadataUtils::file_id_to_meta
 
 bool FileMetadataUtils::IsModified(const FileMetadata& file)
 {
-    std::cout << "In FileMetadataUtils::IsModified()" << std::endl;
+    std::cout << "Info: In FileMetadataUtils::IsModified()" << std::endl;
 
     bool is_modified{false};
 
@@ -25,7 +25,7 @@ bool FileMetadataUtils::IsModified(const FileMetadata& file)
 
 bool FileMetadataUtils::IsNew(const FileMetadata& file)
 {
-    std::cout << "In FileMetadataUtils::IsNew()" << std::endl;
+    std::cout << "Info: In FileMetadataUtils::IsNew()" << std::endl;
     bool is_new{false};
     auto itr = file_id_to_metadata.find(file.unique_id);
 
@@ -37,13 +37,27 @@ bool FileMetadataUtils::IsNew(const FileMetadata& file)
     return is_new;
 }
 
+std::string FileMetadataUtils::GenerateFileUniqueId(const std::string &filePath) 
+{
+    std::cout << "Info: In FileMetadataUtils::GenerateFileUniqueId()" << std::endl;
+
+    size_t hashValue = std::hash<std::string>{}(filePath);
+
+    // convert size_t to string
+    return std::to_string(hashValue);
+}
+
 void FileMetadataUtils::UpdateLocalFilePath(std::string file_id, std::string local_filepath)
 {
+    std::cout << "Info: In FileMetadataUtils::UpdateLocalFilePath()" << std::endl;
+
     file_id_to_metadata[file_id].local_path = local_filepath;
 }
 
 FileMetadata FileMetadataUtils::GetFileMetadataOfLocalFile(std::string local_filename)
 {
+    std::cout << "Info: In FileMetadataUtils::GetFileMetadataOfLocalFile()" << std::endl;
+
     // Find last backslash
     size_t pos = local_filename.find_last_of("\\/");
 
@@ -54,7 +68,7 @@ FileMetadata FileMetadataUtils::GetFileMetadataOfLocalFile(std::string local_fil
 
 std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p) 
 {
-    std::cout << "In FileMetadataUtils::GetLastModifiedDateTime()" << std::endl;
+    std::cout << "Info: In FileMetadataUtils::GetLastModifiedDateTime()" << std::endl;
     auto ftime = fs::last_write_time(p); 
     auto sctp = std::chrono::system_clock::now()
               + (ftime - fs::file_time_type::clock::now());
@@ -74,7 +88,7 @@ std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p)
 
 std::vector<FileMetadata> FileMetadataUtils::GetListOfFilesToDownload(std::vector<FileMetadata> available_files)
 {
-    std::cout << "In FileMetadataUtils::GetListOfFilesToDownload()" << std::endl;
+    std::cout << "Info: In FileMetadataUtils::GetListOfFilesToDownload()" << std::endl;
     std::vector<FileMetadata> files_to_download{};
     for(const auto itr : available_files)
     {
@@ -94,7 +108,9 @@ std::vector<FileMetadata> FileMetadataUtils::GetListOfFilesToDownload(std::vecto
     return files_to_download;
 }
 
-std::string getCurrentTimeString() {
+std::string getCurrentTimeString() 
+{
+    std::cout << "Info: In FileMetadataUtils::getCurrentTimeString()" << std::endl;
     // Get current time as system_clock
     auto now = std::chrono::system_clock::now();
 
@@ -117,6 +133,8 @@ std::string getCurrentTimeString() {
 
 void FileMetadataUtils::UpdateFileMetadataForUpload(std::string file_id, fs::path dest_file_path)
 {
+    std::cout << "Info: In FileMetadataUtils::UpdateFileMetadataForUpload()" << std::endl;
+
     file_id_to_metadata[file_id].last_backup_time = getCurrentTimeString();
     file_id_to_metadata[file_id].destination_path = dest_file_path.string();
 }

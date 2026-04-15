@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
     "D:\\Assessment\\Connector1\\include"
+    "D:\\Assessment\\Connector1\\third_party"
     "C:\\curl\\include")
 
 add_executable(Connector

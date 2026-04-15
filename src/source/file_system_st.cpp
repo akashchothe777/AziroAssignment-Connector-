@@ -8,7 +8,7 @@ namespace fs = std::filesystem;
 
 bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
 {
-    std::cout << "In FileSystemST::DownloadFile()" << std::endl;
+    std::cout << "Info: In FileSystemST::DownloadFile()" << std::endl;
     bool returnValue{false};
 
     std::string source_file = file.source_path;
@@ -20,7 +20,7 @@ bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
             std::filesystem::copy_options::overwrite_existing
         ))
     {
-        std::cout << "File copied from Source = " << source_file
+        std::cout << "Info: File copied from Source = " << source_file
                     << " to Destination = " << dest_file << std::endl;
         FileMetadataUtils::UpdateLocalFilePath(file.unique_id, dest_file);
         
@@ -28,7 +28,7 @@ bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
     }
     else
     {
-        std::cout << "Copying files failed" << std::endl;
+        std::cout << "Error: Copying files failed" << std::endl;
     }
 
     return returnValue;
@@ -36,7 +36,7 @@ bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
 
 std::vector<FileMetadata> FileSystemST::GetFilesDetails()
 {
-    std::cout << "In FileSystemST::GetFilesDetails()" << std::endl;
+    std::cout << "Info: In FileSystemST::GetFilesDetails()" << std::endl;
     std::vector<FileMetadata> files;
     for (const auto& entry : fs::recursive_directory_iterator(address)) 
     {
@@ -45,7 +45,7 @@ std::vector<FileMetadata> FileSystemST::GetFilesDetails()
 
         FileMetadata file;
 
-        std::string uid = ConnectorUtils::GenerateFileUniqueId(entry.path().string());
+        std::string uid = FileMetadataUtils::GenerateFileUniqueId(entry.path().string());
         file.unique_id = uid;
         file.source_path = entry.path().string();
         fs::path relativePath = fs::relative(entry.path().string(), address);

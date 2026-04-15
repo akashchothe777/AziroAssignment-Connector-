@@ -4,7 +4,7 @@
 
 bool SourceAdapter::DownloadFiles(std::vector<FileMetadata> files, std::string download_folder)
 {
-    std::cout << "In SourceAdapter::DownloadFiles()" << std::endl;
+    std::cout << "Info: In SourceAdapter::DownloadFiles()" << std::endl;
     bool all_success{true};
 
     for(const auto& file: files)
@@ -15,7 +15,7 @@ bool SourceAdapter::DownloadFiles(std::vector<FileMetadata> files, std::string d
 
         if(!success)
         {
-            std::cout << "Failed to download file: " << file.source_path << std::endl;
+            std::cerr << "Error: Failed to download file: " << file.source_path << std::endl;
             all_success = false;
         }
     }
@@ -25,7 +25,7 @@ bool SourceAdapter::DownloadFiles(std::vector<FileMetadata> files, std::string d
 
 std::vector<FileMetadata> SourceAdapter::GetFileList()
 {
-    std::cout << "In SourceAdapter::GetFileList()" << std::endl;
+    std::cout << "Info: In SourceAdapter::GetFileList()" << std::endl;
     std::vector<FileMetadata> files = source_type->GetFilesDetails();
 
     return files;

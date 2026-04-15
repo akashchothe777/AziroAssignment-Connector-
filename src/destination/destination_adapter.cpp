@@ -7,7 +7,7 @@ namespace fs = std::filesystem;
 
 bool DestinationAdapter::UploadFiles(std::string download_folder)
 {
-    std::cout << "In DestinationAdapter::UploadFiles()" << std::endl;
+    std::cout << "Info: In DestinationAdapter::UploadFiles()" << std::endl;
 
     bool all_success{true};
 
@@ -19,7 +19,7 @@ bool DestinationAdapter::UploadFiles(std::string download_folder)
 
         if(!success)
         {
-            std::cout << "Failed to upload file: " << itr.path().filename().string() << std::endl;
+            std::cerr << "Error: Failed to upload file: " << itr.path().filename().string() << std::endl;
             all_success = false;
         }
     }

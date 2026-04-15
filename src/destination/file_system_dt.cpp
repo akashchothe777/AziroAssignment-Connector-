@@ -1,14 +1,14 @@
 #include "destination/file_system_dt.h"
 #include <filesystem>
 #include <iostream>
-#include "metadata\file_metadata_utils.h"
+#include "metadata/file_metadata_utils.h"
 
 namespace fs = std::filesystem;
 
 
 bool FileSystemDT::UploadFile(fs::path file_path)
 {
-    std::cout << "In FileSystemDT::UploadFile()" << std::endl;
+    std::cout << "Info: In FileSystemDT::UploadFile()" << std::endl;
 
     bool result = false;
 
@@ -31,17 +31,17 @@ bool FileSystemDT::UploadFile(fs::path file_path)
             FileMetadataUtils::UpdateFileMetadataForUpload(file_metadata.unique_id, dest_path);
 
             fs::remove(file_path);
-            std::cout << "Copied file " << file_path << " to the destination "
+            std::cout << "Info: Copied file " << file_path << " to the destination "
                 << dest_path << std::endl;
         }
         else
         {
-            std::cerr << "Copying file failed" << '\n';
+            std::cerr << "Error: Copying file failed" << std::endl;
         }
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << e.what() << std::endl;
     }
     
     return result;

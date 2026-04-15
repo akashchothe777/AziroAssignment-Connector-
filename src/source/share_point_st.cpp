@@ -2,14 +2,14 @@
 #include <curl/curl.h>
 #include <iostream>
 #include <string>
-#include "../../third_party/nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
 
 bool SharePointST::DownloadFile(FileMetadata file_name, std::string download_folder)
 {
-    std::cout << "In SharePointST::DownloadFile()" << std::endl;
+    std::cout << "Info: In SharePointST::DownloadFile()" << std::endl;
     CURL* curl = curl_easy_init();
 
     return true;
@@ -24,7 +24,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, string* output)
 
 std::vector<FileMetadata> SharePointST::GetFilesDetails()
 {
-    std::cout << "In SharePointST::GetFilesDetails()" << std::endl;
+    std::cout << "Info: In SharePointST::GetFilesDetails()" << std::endl;
     std::vector<FileMetadata> returnData;
 
     string access_token = "ACCESS_TOKEN";
@@ -70,7 +70,7 @@ std::vector<FileMetadata> SharePointST::GetFilesDetails()
         } 
         else
         {
-            cerr << "Request failed: " << curl_easy_strerror(res) << endl;
+            cerr << "Error: Request failed: " << curl_easy_strerror(res) << endl;
         }
 
         curl_easy_cleanup(curl);
