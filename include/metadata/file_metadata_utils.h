@@ -26,6 +26,7 @@ public:
     static void UpdateLocalFilePath(std::string file_id, std::string local_filepath);
     static FileMetadata GetFileMetadataOfLocalFile(std::string local_filename);
     static std::string GenerateFileUniqueId(const std::string &filePath);
+    static std::string GetCurrentTimeString();
 };
 
 #endif // FILE_METADATA_UTILS_H

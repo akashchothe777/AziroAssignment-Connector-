@@ -108,9 +108,9 @@ std::vector<FileMetadata> FileMetadataUtils::GetListOfFilesToDownload(std::vecto
     return files_to_download;
 }
 
-std::string getCurrentTimeString() 
+std::string FileMetadataUtils::GetCurrentTimeString() 
 {
-    std::cout << "Info: In FileMetadataUtils::getCurrentTimeString()" << std::endl;
+    std::cout << "Info: In FileMetadataUtils::GetCurrentTimeString()" << std::endl;
     // Get current time as system_clock
     auto now = std::chrono::system_clock::now();
 
@@ -135,6 +135,6 @@ void FileMetadataUtils::UpdateFileMetadataForUpload(std::string file_id, fs::pat
 {
     std::cout << "Info: In FileMetadataUtils::UpdateFileMetadataForUpload()" << std::endl;
 
-    file_id_to_metadata[file_id].last_backup_time = getCurrentTimeString();
+    file_id_to_metadata[file_id].last_backup_time = GetCurrentTimeString();
     file_id_to_metadata[file_id].destination_path = dest_file_path.string();
 }

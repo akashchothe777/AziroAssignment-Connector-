@@ -5,7 +5,6 @@
 
 namespace fs = std::filesystem;
 
-
 bool FileSystemDT::UploadFile(fs::path file_path)
 {
     std::cout << "Info: In FileSystemDT::UploadFile()" << std::endl;
@@ -20,7 +19,8 @@ bool FileSystemDT::UploadFile(fs::path file_path)
     
     if (!fs::exists(folder_path)) 
     {
-        fs::create_directories(folder_path);
+        if(!fs::create_directories(folder_path))
+            std::cerr << "Error: Failed to create directory - " << folder_path << std::endl;
     }
 
     try
@@ -36,12 +36,12 @@ bool FileSystemDT::UploadFile(fs::path file_path)
         }
         else
         {
-            std::cerr << "Error: Copying file failed" << std::endl;
+            std::cerr << "Error: Copying file failed - " << file_path << std::endl;
         }
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
     }
     
     return result;
