@@ -3,7 +3,7 @@ Connector project is for data backup from one drive to azure cloud
 
 here is the classdiagram,
 
-<img width="632" height="347" alt="ClassDiagram" src="https://github.com/user-attachments/assets/a704fc47-15c7-451c-91b0-1b7e5e04c191" />
+<img width="622" height="357" alt="ClassDiagram" src="https://github.com/user-attachments/assets/5816021d-bd5b-4f71-a1a5-676182329774" />
 
 
 I am facing some issues with the libcurl library on my machine. Also, the required Azure setup is not ready with us.
