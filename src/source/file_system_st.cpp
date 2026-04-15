@@ -38,14 +38,18 @@ std::vector<FileMetadata> FileSystemST::GetFilesDetails()
 {
     std::cout << "In FileSystemST::GetFilesDetails()" << std::endl;
     std::vector<FileMetadata> files;
-    for (const auto& entry : fs::directory_iterator(address))
+    for (const auto& entry : fs::recursive_directory_iterator(address)) 
     {
+        if(entry.is_directory())
+            continue;
+
         FileMetadata file;
 
         std::string uid = ConnectorUtils::GenerateFileUniqueId(entry.path().string());
         file.unique_id = uid;
         file.source_path = entry.path().string();
-        file.name = entry.path().filename().string();
+        fs::path relativePath = fs::relative(entry.path().string(), address);
+        file.name = relativePath.string();
         file.size = fs::file_size(entry.path());
         file.last_modified_time = FileMetadataUtils::GetLastModifiedDateTime(entry.path());
 

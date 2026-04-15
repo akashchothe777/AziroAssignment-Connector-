@@ -11,14 +11,17 @@ bool FileSystemDT::UploadFile(fs::path file_path)
     std::cout << "In FileSystemDT::UploadFile()" << std::endl;
 
     bool result = false;
-    if (!fs::exists(address)) 
-    {
-        fs::create_directories(address);
-    }
 
     FileMetadata file_metadata = FileMetadataUtils::GetFileMetadataOfLocalFile(file_path.filename().string());
 
     fs::path dest_path = fs::path(address) / file_metadata.name;
+
+    fs::path folder_path = dest_path.parent_path();
+    
+    if (!fs::exists(folder_path)) 
+    {
+        fs::create_directories(folder_path);
+    }
 
     try
     {
