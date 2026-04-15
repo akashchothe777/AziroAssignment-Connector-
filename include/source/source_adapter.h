@@ -2,7 +2,7 @@
 #define SOURCE_ADAPTER_H
 
 #include "./source_type.h"
-#include "../file_details.h"
+#include "metadata/file_metadata.h"
 #include <vector>
 #include <memory>
 
@@ -13,8 +13,8 @@ private:
     unsigned int retry_count;
 public:
     SourceAdapter(std::shared_ptr<SourceType> st, unsigned int rc) : source_type(st), retry_count(rc){};
-    std::vector<FileDetails> GetFileList();
-    bool DownloadFiles(std::vector<FileDetails> files, std::string download_folder);
+    std::vector<FileMetadata> GetFileList();
+    bool DownloadFiles(std::vector<FileMetadata> files, std::string download_folder);
     ~SourceAdapter(){};
 };
 

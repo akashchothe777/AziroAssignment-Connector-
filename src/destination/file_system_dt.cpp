@@ -16,18 +16,20 @@ bool FileSystemDT::UploadFile(fs::path file_path)
         fs::create_directories(address);
     }
 
-    fs::path destPath = fs::path(address) / file_path.filename();
+    FileMetadata file_metadata = FileMetadataUtils::GetFileMetadataOfLocalFile(file_path.filename().string());
+
+    fs::path dest_path = fs::path(address) / file_metadata.name;
 
     try
     {
-        if(fs::copy_file(file_path, destPath, fs::copy_options::overwrite_existing))
+        if(fs::copy_file(file_path, dest_path, fs::copy_options::overwrite_existing))
         {
             result = true;
-            FileMetadataUtils::UpdateFileMetadataForUpload(file_path, destPath);
+            FileMetadataUtils::UpdateFileMetadataForUpload(file_metadata.unique_id, dest_path);
 
             fs::remove(file_path);
-            std::cout << "Copied file " << file_path << " to the destination folder "
-                << address << std::endl;
+            std::cout << "Copied file " << file_path << " to the destination "
+                << dest_path << std::endl;
         }
         else
         {

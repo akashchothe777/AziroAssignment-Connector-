@@ -8,8 +8,8 @@ class FileSystemST : public SourceType
     std::string address;
 public:
     FileSystemST(std::string folder_path) : address(folder_path){}
-    bool DownloadFile(std::string file_name, std::string download_folder) override;
-    std::vector<FileDetails> GetFilesDetails() override;
+    bool DownloadFile(FileMetadata file_name, std::string download_folder) override;
+    std::vector<FileMetadata> GetFilesDetails() override;
     FileSystemST(/* args */){};
     ~FileSystemST(){};
 };

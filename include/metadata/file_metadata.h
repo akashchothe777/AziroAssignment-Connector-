@@ -2,11 +2,13 @@
 #define FILE_METADATA_H
 
 #include <vector>
-#include "../file_details.h"
+#include <string>
 
 struct FileMetadata
 {
-    std::string path;
+    std::string unique_id;
+    std::string source_path;
+    std::string local_path;
     std::string name;
     std::string last_modified_time;
     unsigned long long size;
@@ -15,14 +17,22 @@ struct FileMetadata
 
     FileMetadata(){}
 
-    FileMetadata(std::string _path,
-    std::string _name,
-    std::string _last_modified_time,
-    unsigned long long _size,
-    std::string _last_backup_time,
-    std::string _destination_path) :
-        path(_path), name(_name), last_modified_time(_last_modified_time), 
-        size(_size), last_backup_time(_last_backup_time), destination_path(_destination_path){}
+    FileMetadata(std::string _unique_id,
+        std::string _source_path,
+        std::string _local_path,
+        std::string _name,
+        std::string _last_modified_time,
+        unsigned long long _size,
+        std::string _last_backup_time,
+        std::string _destination_path) :
+            unique_id(_unique_id),
+            source_path(_source_path), 
+            local_path(_local_path), 
+            name(_name), 
+            last_modified_time(_last_modified_time),
+            size(_size), 
+            last_backup_time(_last_backup_time), 
+            destination_path(_destination_path){}
 };
 
 #endif // FILE_METADATA_H

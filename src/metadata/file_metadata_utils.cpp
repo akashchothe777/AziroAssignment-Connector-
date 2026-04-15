@@ -2,44 +2,55 @@
 #include <iostream>
 #include <algorithm>
 
-std::map<std::string, FileMetadata> FileMetadataUtils::filepath_to_metadata{};
+std::unordered_map<std::string, FileMetadata> FileMetadataUtils::file_id_to_metadata{};
 
-bool FileMetadataUtils::IsModified(const FileDetails& file)
+bool FileMetadataUtils::IsModified(const FileMetadata& file)
 {
     std::cout << "In FileMetadataUtils::IsModified()" << std::endl;
 
     bool is_modified{false};
-    for(const auto& file_to_md_itr : filepath_to_metadata)
+
+    auto itr = file_id_to_metadata.find(file.unique_id);
+
+    if(itr != file_id_to_metadata.end())
     {
-        if(file_to_md_itr.first == file.file_path)
+        if(itr->second.last_modified_time != file.last_modified_time)
         {
-            if(file_to_md_itr.second.last_modified_time != file.last_modified_time)
-            {
-                is_modified = true;
-            }
-            break;
+            is_modified = true;
         }
     }
 
     return is_modified;
 }
 
-bool FileMetadataUtils::IsNew(const FileDetails& file)
+bool FileMetadataUtils::IsNew(const FileMetadata& file)
 {
     std::cout << "In FileMetadataUtils::IsNew()" << std::endl;
-    bool is_new{true};
-    for(const auto& file_to_md_itr : filepath_to_metadata)
+    bool is_new{false};
+    auto itr = file_id_to_metadata.find(file.unique_id);
+
+    if(itr == file_id_to_metadata.end())
     {
-        if(file_to_md_itr.first == file.file_path)
-        {
-            is_new = false;
-            break;
-        }
+        is_new = true;
     }
 
     return is_new;
 }
 
+void FileMetadataUtils::UpdateLocalFilePath(std::string file_id, std::string local_filepath)
+{
+    file_id_to_metadata[file_id].local_path = local_filepath;
+}
+
+FileMetadata FileMetadataUtils::GetFileMetadataOfLocalFile(std::string local_filename)
+{
+    // Find last backslash
+    size_t pos = local_filename.find_last_of("\\/");
+
+    std::string file_unique_id = local_filename.substr(pos + 1);
+
+    return file_id_to_metadata[file_unique_id];
+}
 
 std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p) 
 {
@@ -61,20 +72,21 @@ std::string FileMetadataUtils::GetLastModifiedDateTime(const fs::path& p)
     return oss.str();
 }
 
-std::vector<FileDetails> FileMetadataUtils::GetListOfFilesToDownload(std::vector<FileDetails> available_files)
+std::vector<FileMetadata> FileMetadataUtils::GetListOfFilesToDownload(std::vector<FileMetadata> available_files)
 {
     std::cout << "In FileMetadataUtils::GetListOfFilesToDownload()" << std::endl;
-    std::vector<FileDetails> files_to_download{};
+    std::vector<FileMetadata> files_to_download{};
     for(const auto itr : available_files)
     {
         if(IsNew(itr))
         {
-            filepath_to_metadata[itr.file_path] = FileMetadata(itr.file_path, itr.name, itr.last_modified_time, itr.size, "", "");
+            file_id_to_metadata[itr.unique_id] = FileMetadata(itr.unique_id,itr.source_path,"", itr.name, itr.last_modified_time, itr.size, "", "");
             files_to_download.push_back(itr);
         }
         else if(IsModified(itr))
         {
-            filepath_to_metadata[itr.file_path].last_modified_time = itr.last_modified_time;
+            file_id_to_metadata[itr.unique_id].last_modified_time = itr.last_modified_time;
+            file_id_to_metadata[itr.unique_id].size = itr.size;
             files_to_download.push_back(itr);
         }
     }
@@ -103,14 +115,8 @@ std::string getCurrentTimeString() {
     return oss.str();
 }
 
-void FileMetadataUtils::UpdateFileMetadataForUpload(fs::path file_path, fs::path dest_file_path)
+void FileMetadataUtils::UpdateFileMetadataForUpload(std::string file_id, fs::path dest_file_path)
 {
-    auto itr = std::find_if(filepath_to_metadata.begin(), filepath_to_metadata.end(), [=](const auto& item){
-        return (item.second.name == file_path.filename().string());
-    });
-    if(itr != filepath_to_metadata.end())
-    {
-        itr->second.last_backup_time = getCurrentTimeString();
-        itr->second.destination_path = dest_file_path.string();
-    }
+    file_id_to_metadata[file_id].last_backup_time = getCurrentTimeString();
+    file_id_to_metadata[file_id].destination_path = dest_file_path.string();
 }

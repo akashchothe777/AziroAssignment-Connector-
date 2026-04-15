@@ -7,7 +7,7 @@
 using json = nlohmann::json;
 using namespace std;
 
-bool SharePointST::DownloadFile(std::string file_name, std::string download_folder)
+bool SharePointST::DownloadFile(FileMetadata file_name, std::string download_folder)
 {
     std::cout << "In SharePointST::DownloadFile()" << std::endl;
     CURL* curl = curl_easy_init();
@@ -22,10 +22,10 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, string* output)
     return totalSize;
 }
 
-std::vector<FileDetails> SharePointST::GetFilesDetails()
+std::vector<FileMetadata> SharePointST::GetFilesDetails()
 {
     std::cout << "In SharePointST::GetFilesDetails()" << std::endl;
-    std::vector<FileDetails> returnData;
+    std::vector<FileMetadata> returnData;
 
     string access_token = "ACCESS_TOKEN";
     string url = "https://graph.microsoft.com/v1.0/sites/{site-id}/drive/root/children";
@@ -59,8 +59,8 @@ std::vector<FileDetails> SharePointST::GetFilesDetails()
                 cout << "Created: " << item["createdDateTime"] << endl;
                 cout << "Modified: " << item["lastModifiedDateTime"] << endl;
                 cout << "--------------------------" << endl;
-                FileDetails file_details;
-                file_details.file_path = item["name"];
+                FileMetadata file_details;
+                file_details.source_path = item["name"];
                 file_details.name = item["name"];
                 file_details.last_modified_time = item["lastModifiedDateTime"];
                 file_details.size = item["size"];

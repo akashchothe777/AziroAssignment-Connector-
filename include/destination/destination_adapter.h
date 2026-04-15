@@ -2,7 +2,7 @@
 #define DESTINATION_ADAPTER_H
 
 #include "destination_type.h"
-#include "../file_details.h"
+#include "metadata/file_metadata.h"
 #include <vector>
 #include <memory>
 

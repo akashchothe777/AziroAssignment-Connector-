@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     {
         try
         {
-            json_handler.loadFromFile(FileMetadataUtils::filepath_to_metadata);
+            json_handler.loadFromFile(FileMetadataUtils::file_id_to_metadata);
         }
         catch(const std::exception& e)
         {
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     ConnectorEngine connector_engine(sa, da, download_folder);
     connector_engine.run();
 
-    json_handler.saveToFile(FileMetadataUtils::filepath_to_metadata);
+    json_handler.saveToFile(FileMetadataUtils::file_id_to_metadata);
 
     return 0;
 }

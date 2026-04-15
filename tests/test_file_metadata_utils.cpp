@@ -1,27 +1,12 @@
 #include <gtest/gtest.h>
-#include "file_details.h"
+#include "metadata/file_metadata.h"
 #include "metadata/file_metadata_utils.h"
 
 TEST(TestFileMetadataUtils, TestIsModifiedTrue) 
 {
     // Arrange
-    FileDetails file = {"D:/xyz.txt", "xyz.txt", "2026-04-13T11:20:38", 100};
-    FileMetadataUtils::filepath_to_metadata["D:/xyz.txt"] = FileMetadata("D:/xyz.txt",
-    "xyz.txt", "2026-04-13T11:20:38", 100, "2026-04-13T11:20:38", "D:/dest/xyz.txt");
-
-    // Act
-    bool is_modified = FileMetadataUtils::IsModified(file);
-
-    // Assert
-    EXPECT_FALSE(is_modified);
-}
-
-TEST(TestFileMetadataUtils, TestIsModifiedFalse) 
-{
-    // Arrange
-    FileDetails file = {"D:/xyz.txt", "xyz.txt", "2026-04-13T11:20:38", 100};
-    FileMetadataUtils::filepath_to_metadata["D:/xyz.txt"] = FileMetadata("D:/xyz.txt",
-    "xyz.txt", "2026-04-13T11:20:39", 100, "2026-04-13T11:20:38", "D:/dest/xyz.txt");
+    FileMetadata file = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-13T11:20:38", 100, "", "");
+    FileMetadataUtils::file_id_to_metadata["11469107826276927601"] = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-15T11:20:38", 100, "", "");
 
     // Act
     bool is_modified = FileMetadataUtils::IsModified(file);
@@ -30,12 +15,24 @@ TEST(TestFileMetadataUtils, TestIsModifiedFalse)
     EXPECT_TRUE(is_modified);
 }
 
+TEST(TestFileMetadataUtils, TestIsModifiedFalse) 
+{
+    // Arrange
+    FileMetadata file = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-13T11:20:38", 100, "", "");
+    FileMetadataUtils::file_id_to_metadata["11469107826276927601"] = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-13T11:20:38", 100, "", "");
+
+    // Act
+    bool is_modified = FileMetadataUtils::IsModified(file);
+
+    // Assert
+    EXPECT_FALSE(is_modified);
+}
+
 TEST(TestFileMetadataUtils, TestIsNewFalse) 
 {
     // Arrange
-    FileDetails file = {"D:/xyz.txt", "xyz.txt", "2026-04-13T11:20:38", 100};
-    FileMetadataUtils::filepath_to_metadata["D:/xyz.txt"] = FileMetadata("D:/xyz.txt",
-    "xyz.txt", "2026-04-13T11:20:39", 100, "2026-04-13T11:20:38", "D:/dest/xyz.txt");
+    FileMetadata file = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-13T11:20:38", 100, "", "");
+    FileMetadataUtils::file_id_to_metadata["11469107826276927601"] = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-13T11:20:38", 100, "", "");
 
     // Act
     bool is_new = FileMetadataUtils::IsNew(file);
@@ -47,9 +44,8 @@ TEST(TestFileMetadataUtils, TestIsNewFalse)
 TEST(TestFileMetadataUtils, TestIsNewTrue) 
 {
     // Arrange
-    FileDetails file = {"D:/pqr.txt", "pqr.txt", "2026-04-13T11:20:38", 100};
-    FileMetadataUtils::filepath_to_metadata["D:/xyz.txt"] = FileMetadata("D:/xyz.txt",
-    "xyz.txt", "2026-04-13T11:20:39", 100, "2026-04-13T11:20:38", "D:/dest/xyz.txt");
+    FileMetadata file = FileMetadata("11469107826276927611", "D:/pqr.txt", "D:/df/11469107826276927611", "pqr.txt", "2026-04-13T11:20:38", 100, "", "");
+    FileMetadataUtils::file_id_to_metadata["11469107826276927601"] = FileMetadata("11469107826276927601", "D:/xyz.txt", "D:/df/11469107826276927601", "xyz.txt", "2026-04-13T11:20:38", 100, "", "");
 
     // Act
     bool is_new = FileMetadataUtils::IsNew(file);

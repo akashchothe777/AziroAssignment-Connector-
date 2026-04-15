@@ -2,16 +2,17 @@
 #include <iostream>
 #include <filesystem>
 #include "metadata/file_metadata_utils.h"
+#include "utils/utils.h"
 
 namespace fs = std::filesystem;
 
-bool FileSystemST::DownloadFile(std::string file_name, std::string download_folder)
+bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
 {
     std::cout << "In FileSystemST::DownloadFile()" << std::endl;
     bool returnValue{false};
 
-    std::string source_file = address + "//" + file_name;
-    std::string dest_file = download_folder + "//" + file_name;
+    std::string source_file = file.source_path;
+    std::string dest_file = download_folder + "\\" + file.unique_id;
 
     if(std::filesystem::copy_file(
             source_file,
@@ -21,6 +22,8 @@ bool FileSystemST::DownloadFile(std::string file_name, std::string download_fold
     {
         std::cout << "File copied from Source = " << source_file
                     << " to Destination = " << dest_file << std::endl;
+        FileMetadataUtils::UpdateLocalFilePath(file.unique_id, dest_file);
+        
         returnValue = true;
     }
     else
@@ -31,14 +34,17 @@ bool FileSystemST::DownloadFile(std::string file_name, std::string download_fold
     return returnValue;
 }
 
-std::vector<FileDetails> FileSystemST::GetFilesDetails()
+std::vector<FileMetadata> FileSystemST::GetFilesDetails()
 {
     std::cout << "In FileSystemST::GetFilesDetails()" << std::endl;
-    std::vector<FileDetails> files;
+    std::vector<FileMetadata> files;
     for (const auto& entry : fs::directory_iterator(address))
     {
-        FileDetails file;
-        file.file_path = entry.path().string();
+        FileMetadata file;
+
+        std::string uid = ConnectorUtils::GenerateFileUniqueId(entry.path().string());
+        file.unique_id = uid;
+        file.source_path = entry.path().string();
         file.name = entry.path().filename().string();
         file.size = fs::file_size(entry.path());
         file.last_modified_time = FileMetadataUtils::GetLastModifiedDateTime(entry.path());

@@ -15,6 +15,7 @@ add_executable(Connector
              src/source/file_system_st.cpp
              src/source/share_point_st.cpp
              src/source/source_adapter.cpp
+             src/utils/utils.cpp
              src/metadata/file_metadata_utils.cpp)
 
 target_link_directories(Connector PRIVATE "D:/Downloads/curl-8.19.0/lib")
