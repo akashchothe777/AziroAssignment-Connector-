@@ -18,6 +18,7 @@ add_executable(Connector
              src/source/one_drive_st.cpp
              src/source/source_adapter.cpp
              src/utils/utils.cpp
+             src/metadata/json_handler.cpp
              src/metadata/file_metadata_utils.cpp)
 
 target_link_directories(Connector PRIVATE "D:/Downloads/curl-8.19.0/lib")

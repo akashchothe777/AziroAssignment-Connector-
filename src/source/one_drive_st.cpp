@@ -65,7 +65,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* out
     return totalSize;
 }
 
-bool OneDriveST::GetFileDetailsItreatively(std::vector<FileMetadata>& files_metadata, std::string folder_id)
+bool OneDriveST::GetFileDetailsRecursively(std::vector<FileMetadata>& files_metadata, std::string folder_id)
 {
     std::string url_address = "https://graph.microsoft.com/v1.0/me/drive/items/" + folder_id + "/children";
 
@@ -96,7 +96,7 @@ bool OneDriveST::GetFileDetailsItreatively(std::vector<FileMetadata>& files_meta
                 if (item.contains("folder"))
                 {
                     std::vector<FileMetadata> sub_files_metadata;
-                    GetFileDetailsItreatively(sub_files_metadata, item["id"]);
+                    GetFileDetailsRecursively(sub_files_metadata, item["id"]);
 
                     std::string name = item["name"];
                     // prepend folder name here in the file name
@@ -150,7 +150,7 @@ std::vector<FileMetadata> OneDriveST::GetFilesDetails()
     std::cout << "Info: In OneDriveST::GetFilesDetails()" << std::endl;
     std::vector<FileMetadata> files_metadata;
 
-    GetFileDetailsItreatively(files_metadata, ExtractFolderID(address));
+    GetFileDetailsRecursively(files_metadata, ExtractFolderID(address));
 
     return files_metadata;
 }
