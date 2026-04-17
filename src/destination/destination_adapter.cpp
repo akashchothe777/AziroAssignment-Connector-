@@ -17,7 +17,11 @@ bool DestinationAdapter::UploadFiles(std::string download_folder)
             return destination_type->UploadFile(itr.path());
         }, retry_count);
 
-        if(!success)
+        if(success)
+        {
+            fs::remove(itr.path());
+        }
+        else
         {
             std::cerr << "Error: Failed to upload file: " << itr.path().filename().string() << std::endl;
             all_success = false;

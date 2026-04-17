@@ -30,7 +30,6 @@ bool FileSystemDT::UploadFile(fs::path file_path)
             result = true;
             FileMetadataUtils::UpdateFileMetadataForUpload(file_metadata.unique_id, dest_path);
 
-            fs::remove(file_path);
             std::cout << "Info: Copied file " << file_path << " to the destination "
                 << dest_path << std::endl;
         }

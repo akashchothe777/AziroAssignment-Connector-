@@ -1,8 +1,9 @@
 #include <iostream>
 #include "engine/connector_engine.h"
 #include "source/file_system_st.h"
-#include "source/share_point_st.h"
+#include "source/one_drive_st.h"
 #include "destination/file_system_dt.h"
+#include "destination/azure_blob_dt.h"
 #include "metadata/json_handler.h"
 #include "metadata/file_metadata_utils.h"
 #include "config/connector_config.h"
@@ -31,6 +32,15 @@ int main(int argc, char* argv[])
     unsigned int retry_count = conn_config.get<int>("retry_count", 3);
     std::cout << "Info: Retry count = " << retry_count << std::endl;
 
+    std::string source_url = conn_config.get<std::string>("source_url", "");
+    std::cout << "Info: Source URL = " << metadata_file << std::endl;
+
+    std::string source_access_token = conn_config.get<std::string>("source_access_token", "");
+    std::cout << "Info: Source access token = " << metadata_file << std::endl;
+
+    std::string sas_url = conn_config.get<std::string>("sas_url", "");
+    std::cout << "Info: Sas URL = " << metadata_file << std::endl;
+
     JsonHandler json_handler(metadata_file);
 
     if (!fs::exists(metadata_file)) 
@@ -56,10 +66,11 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::shared_ptr<SourceType> source_type = std::make_shared<FileSystemST>(source_folder);
-    //std::shared_ptr<SourceType> source_type = std::make_shared<SharePointST>();
+    // std::shared_ptr<SourceType> source_type = std::make_shared<FileSystemST>(source_folder);
+    std::shared_ptr<SourceType> source_type = std::make_shared<OneDriveST>(source_url, source_access_token);
     
-    std::shared_ptr<DestinationType> destination_type = std::make_shared<FileSystemDT>(destination_folder);
+    //std::shared_ptr<DestinationType> destination_type = std::make_shared<FileSystemDT>(destination_folder);
+    std::shared_ptr<DestinationType> destination_type = std::make_shared<AzureBlobDT>(sas_url);
 
     SourceAdapter sa(source_type, retry_count);
     DestinationAdapter da(destination_type, retry_count);

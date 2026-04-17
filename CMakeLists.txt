@@ -12,9 +12,10 @@ add_executable(Connector
              main.cpp
              src/destination/destination_adapter.cpp
              src/destination/file_system_dt.cpp
+             src/destination/azure_blob_dt.cpp
              src/engine/connector_engine.cpp
              src/source/file_system_st.cpp
-             src/source/share_point_st.cpp
+             src/source/one_drive_st.cpp
              src/source/source_adapter.cpp
              src/utils/utils.cpp
              src/metadata/file_metadata_utils.cpp)

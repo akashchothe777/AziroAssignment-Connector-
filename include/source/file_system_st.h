@@ -5,12 +5,10 @@
 
 class FileSystemST : public SourceType
 {
-    std::string address;
 public:
-    FileSystemST(std::string folder_path) : address(folder_path){}
+    FileSystemST(std::string folder_path) : SourceType(address){}
     bool DownloadFile(FileMetadata file_name, std::string download_folder) override;
     std::vector<FileMetadata> GetFilesDetails() override;
-    FileSystemST(/* args */){};
     ~FileSystemST(){};
 };
 

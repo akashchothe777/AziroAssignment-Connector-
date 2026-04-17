@@ -8,10 +8,13 @@ namespace fs = std::filesystem;
 
 class DestinationType
 {
+    protected:
     std::string address;
 
     public:
-    virtual bool UploadFile(fs::path file_path) = 0;
+    DestinationType(std::string ads) : address(ads){}
+    virtual bool UploadFile(fs::path downloaded_file) = 0;
+    virtual ~DestinationType(){};
 };
 
 #endif // DESTINATION_TYPE_H

@@ -5,11 +5,9 @@
 
 class FileSystemDT : public DestinationType
 {
-    std::string address;
 public:
-    FileSystemDT(std::string folder_path) : address(folder_path){}
+    FileSystemDT(std::string folder_path) : DestinationType(folder_path){}
     bool UploadFile(fs::path file_path);
-    FileSystemDT(/* args */){};
     ~FileSystemDT(){};
 };
 
