@@ -1,13 +1,29 @@
 # AziroAssignment-Connector-
 Connector project is for data backup from one drive to azure cloud
 
-here is the classdiagram,
+Here is the classdiagram,
 
-<img width="622" height="357" alt="ClassDiagram" src="https://github.com/user-attachments/assets/5816021d-bd5b-4f71-a1a5-676182329774" />
+<img width="700" height="443" alt="ClassDiagram" src="https://github.com/user-attachments/assets/723099db-1b1c-44c9-bf91-f887d80354c8" />
 
+It supports downloading/copying files from source folder to out local download folder and uploading/copying files in data folder to destination folder.
 
-I am facing some issues with the libcurl library on my machine. Also, the required Azure setup is not ready with us.
+Also it supports downloading files from one drive and uploading the downloaded files to Azure Blob storage.
 
-So, I couldnt support the cloud storage part. Instead I have implemented downloading/copying files from source folder to out data folder and uploading/copying files in data folder to destination folder.
+User need to pass a JSON configuration file which should have below details,
 
-I have made design which can be easily extended to support the cloud storage part. 
+{
+  "download_folder": "D:\\Assessment\\Connector\\DownloadFolder",
+  "metadata_file" : "D:\\Assessment\\Connector\\md\\metadata_store.json",
+  "source_url" : "",
+  "source_access_token" : "",
+  "sas_url" : "",
+  "retry_count": 3
+}
+
+Here, 
+download_folder : local folder where downloaded files from source are stored temporarily
+metadata_file : a local file where the metadata of files are stored
+source_url : source from where the tool will download the files
+source_access_token : access token for the source
+destination_sas_url : Azure blob sas url where files will be uploaded
+retry_count : number of times the download or uploaded operation will be performed if failed
