@@ -1,9 +1,10 @@
 #ifndef CONNECTOR_ENGINE_H
 #define CONNECTOR_ENGINE_H
 
-#include "../source/source_adapter.h"
-#include "../destination/destination_adapter.h"
-#include "../metadata/file_metadata.h"
+#include "source/source_adapter.h"
+#include "destination/destination_adapter.h"
+#include "metadata/file_metadata.h"
+#include "metadata/json_handler.h"
 
 class ConnectorEngine
 {
@@ -11,7 +12,7 @@ class ConnectorEngine
     DestinationAdapter destination_adapter;
     std::string download_folder;
 public:
-    void run();
+    void run(JsonHandler& json_handler);
     ConnectorEngine(SourceAdapter sa, DestinationAdapter da, std::string df) :
                         source_adapter(sa), destination_adapter(da), download_folder(df)
     {};

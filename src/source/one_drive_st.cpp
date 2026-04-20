@@ -7,55 +7,136 @@
 
 using json = nlohmann::json;
 
-size_t write_data(void* ptr, size_t size, size_t nmemb, void* stream) 
+long GetFileSize(const std::string& filename) 
 {
-    std::ofstream* out = static_cast<std::ofstream*>(stream);
-    out->write(static_cast<char*>(ptr), size * nmemb);
-    return size * nmemb;
+    try 
+    {
+        if (fs::exists(filename)) 
+        {
+            return fs::file_size(filename);
+        }
+    } 
+    catch (const fs::filesystem_error& e) {
+        std::cerr << "Error: Filesystem error: " << e.what() << std::endl;
+    }
+    return 0;
+}
+
+bool EnsureDirectory(const std::string& filepath) 
+{
+    try 
+    {
+        fs::path p(filepath);
+        if (p.has_parent_path()) 
+        {
+            fs::create_directories(p.parent_path());
+        }
+        return true;
+    } 
+    catch (const fs::filesystem_error& e) 
+    {
+        std::cerr << "Error: Directory error: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+size_t write_callback(void* ptr, size_t size, size_t nmemb, void* stream) 
+{
+    FILE* file = static_cast<FILE*>(stream);
+    return fwrite(ptr, size, nmemb, file);
 }
 
 bool OneDriveST::DownloadFile(FileMetadata file_metadata, std::string download_folder)
 {
     std::cout << "Info: In OneDriveST::DownloadFile()" << std::endl;
-    CURL* curl = curl_easy_init();
-    if (!curl) return false;
 
-    std::string outputPath{download_folder};
+    std::string output_file{download_folder};
 
-    outputPath = outputPath + "\\" + file_metadata.unique_id;
+    output_file = output_file + "\\" + file_metadata.unique_id;
     std::string url = file_metadata.source_path;
 
-    std::ofstream file(outputPath, std::ios::binary);
-
-    if (!file.is_open()) {
-        curl_easy_cleanup(curl);
+    if (!EnsureDirectory(output_file)) 
+    {
         return false;
     }
 
-    struct curl_slist* headers = NULL;
+    long resume_from = GetFileSize(output_file);
 
-    // Add Authorization header (Bearer token)
-    std::string authHeader = "Authorization: Bearer " + access_token;
-    headers = curl_slist_append(headers, authHeader.c_str());
+    FILE* file = fopen(output_file.c_str(), "ab");
+    if (!file) 
+    {
+        std::cerr << "Error: Failed to open file" << std::endl;
+        return false;
+    }
+
+    CURL* curl = curl_easy_init();
+    if (!curl) 
+    {
+        fclose(file);
+        return false;
+    }
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
 
-    // Optional but useful
+    // Follow redirect (Graph API requirement)
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+    // Resume support
+    if (resume_from > 0) 
+    {
+        std::string range = std::to_string(resume_from) + "-";
+        curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str());
+        std::cout << "Info: Resuming from byte: " << resume_from << std::endl;
+    }
+
+    // Timeouts and speed checks
+    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 30L);
+    curl_easy_setopt(curl, CURLOPT_LOW_SPEED_LIMIT, 1024L);
+    curl_easy_setopt(curl, CURLOPT_LOW_SPEED_TIME, 30L);
+
+    // SSL verification
+    // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
 
     CURLcode res = curl_easy_perform(curl);
 
-    curl_slist_free_all(headers);
+    long response_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+
     curl_easy_cleanup(curl);
-    file.close();
+    fclose(file);
 
-    if(res == CURLE_OK)
-        FileMetadataUtils::UpdateLocalFilePath(file_metadata.unique_id, outputPath);
+    if (res != CURLE_OK) 
+    {
+        std::cerr << "Error: CURL error: " << curl_easy_strerror(res) << std::endl;
+        return false;
+    }
+    else
+    {
+        FileMetadataUtils::UpdateLocalFilePath(file_metadata.unique_id, output_file);
+    }
 
-    return (res == CURLE_OK);
+    // Handle HTTP responses
+    if (response_code == 200 || response_code == 206) 
+    {
+        return true;
+    } 
+    else if (response_code == 416) 
+    {
+        std::cerr << "Error: Invalid range (file may already be complete)" << std::endl;
+        return true;
+    } 
+    else if (response_code == 429) 
+    {
+        std::cerr << "Error: Throttled (429)" << std::endl;
+        return false;
+    } 
+    else 
+    {
+        std::cerr << "Error: HTTP error: " << response_code << std::endl;
+        return false;
+    }
 }
 
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output) 
@@ -87,8 +168,26 @@ bool OneDriveST::GetFileDetailsRecursively(std::vector<FileMetadata>& files_meta
 
         res = curl_easy_perform(curl);
 
+        long http_code = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+
         if (res == CURLE_OK) 
         {
+            if (http_code == 401 || http_code == 403) 
+            {
+                std::cerr << "Error: Authentication failed (HTTP " << http_code << ")\n";
+
+                // Optional: log response for debugging
+                std::cerr << "Response: " << response << std::endl;
+
+                // TODO: refresh token here
+                // if (RefreshAccessToken()) retry request
+
+                curl_easy_cleanup(curl);
+                curl_slist_free_all(headers);
+                return false;
+            }
+
             auto jsonData = json::parse(response);
 
             for (auto& item : jsonData["value"]) 
@@ -123,13 +222,17 @@ bool OneDriveST::GetFileDetailsRecursively(std::vector<FileMetadata>& files_meta
                     files_metadata.push_back(file_details);
                 }
             }
+
+            curl_slist_free_all(headers);
         }
     } 
     else
     {
         std::cerr << "Error: Request failed: " << curl_easy_strerror(res) << std::endl;
+        curl_easy_cleanup(curl);
         return false;
     }
+    curl_easy_cleanup(curl);
 
     return true;
 }

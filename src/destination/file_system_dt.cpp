@@ -5,13 +5,11 @@
 
 namespace fs = std::filesystem;
 
-bool FileSystemDT::UploadFile(fs::path file_path)
+bool FileSystemDT::UploadFile(FileMetadata file_metadata)
 {
     std::cout << "Info: In FileSystemDT::UploadFile()" << std::endl;
 
     bool result = false;
-
-    FileMetadata file_metadata = FileMetadataUtils::GetFileMetadataOfLocalFile(file_path.filename().string());
 
     fs::path dest_path = fs::path(address) / file_metadata.name;
 
@@ -25,17 +23,17 @@ bool FileSystemDT::UploadFile(fs::path file_path)
 
     try
     {
-        if(fs::copy_file(file_path, dest_path, fs::copy_options::overwrite_existing))
+        if(fs::copy_file(file_metadata.local_path, dest_path, fs::copy_options::overwrite_existing))
         {
             result = true;
             FileMetadataUtils::UpdateFileMetadataForUpload(file_metadata.unique_id, dest_path);
 
-            std::cout << "Info: Copied file " << file_path << " to the destination "
+            std::cout << "Info: Copied file " << file_metadata.local_path << " to the destination "
                 << dest_path << std::endl;
         }
         else
         {
-            std::cerr << "Error: Copying file failed - " << file_path << std::endl;
+            std::cerr << "Error: Copying file failed - " << file_metadata.local_path << std::endl;
         }
     }
     catch(const std::exception& e)

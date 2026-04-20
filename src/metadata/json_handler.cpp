@@ -45,6 +45,7 @@ void JsonHandler::SaveToFile(std::unordered_map<std::string, FileMetadata>& item
 void JsonHandler::LoadFromFile(std::unordered_map<std::string, FileMetadata>& items_) 
 {
     std::ifstream ifs(json_file_name, std::ios::binary);
+
     if (!ifs) throw std::runtime_error("Failed to open file for reading: " + json_file_name);
     json j;
     try 
@@ -59,6 +60,14 @@ void JsonHandler::LoadFromFile(std::unordered_map<std::string, FileMetadata>& it
     {
         throw std::runtime_error(std::string("JSON error: ") + e.what());
     }
-    items_.clear();
-    items_ = j.get<std::unordered_map<std::string, FileMetadata>>();
+
+    if(j.is_null() || j.empty())
+    {
+        std::cout << "Error: metadata file is having no data" << std::endl;
+    }
+    else
+    {
+        items_.clear();
+        items_ = j.get<std::unordered_map<std::string, FileMetadata>>();
+    }
 }

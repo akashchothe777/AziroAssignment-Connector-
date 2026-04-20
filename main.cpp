@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     std::cout << "Info: Source URL = " << source_url << std::endl;
 
     std::string source_access_token = conn_config.get<std::string>("source_access_token", "");
-    std::cout << "Info: Source access token = " << source_access_token << std::endl;
+    //std::cout << "Info: Source access token = " << source_access_token << std::endl;
 
     std::string destination_sas_url = conn_config.get<std::string>("destination_sas_url", "");
     std::cout << "Info: Destination Sas URL = " << destination_sas_url << std::endl;
@@ -66,14 +66,22 @@ int main(int argc, char* argv[])
     std::shared_ptr<SourceType> source_type = std::make_shared<OneDriveST>(source_url, source_access_token);
     
     //std::shared_ptr<DestinationType> destination_type = std::make_shared<FileSystemDT>(destination_sas_url);
-    std::shared_ptr<DestinationType> destination_type = std::make_shared<AzureBlobDT>(destination_sas_url);
+    std::shared_ptr<DestinationType> destination_type = std::make_shared<AzureBlobDT>(destination_sas_url, retry_count);
 
     SourceAdapter sa(source_type, retry_count);
-    DestinationAdapter da(destination_type, retry_count);
+    DestinationAdapter da(destination_type);
 
     ConnectorEngine connector_engine(sa, da, download_folder);
-    connector_engine.run();
 
+    try
+    {
+       connector_engine.run(json_handler);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    
     json_handler.SaveToFile(FileMetadataUtils::file_id_to_metadata);
 
     return 0;
