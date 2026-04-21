@@ -23,10 +23,11 @@ public:
     static std::string GetLastModifiedDateTime(const fs::path& p);
     static std::vector<FileMetadata> GetListOfFilesToDownload(std::vector<FileMetadata> available_files);
     static void UpdateFileMetadataForUpload(std::string file_id, fs::path dest_file_path);
-    static void UpdateLocalFilePath(std::string file_id, std::string local_filepath);
+    static void UpdateLocalDownloadInfo(std::string file_id, std::string local_filepath);
     static FileMetadata GetFileMetadataOfLocalFile(std::string local_filename);
     static std::string GenerateFileUniqueId(const std::string &filePath);
     static std::string GetCurrentTimeString();
+    static bool IsCompletelyDownloaded(std::string file_id);
 };
 
 #endif // FILE_METADATA_UTILS_H

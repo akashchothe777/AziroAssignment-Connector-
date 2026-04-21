@@ -6,13 +6,12 @@
 
 namespace fs = std::filesystem;
 
-bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
+bool FileSystemST::DownloadFile(FileMetadata file, std::string dest_file)
 {
     std::cout << "Info: In FileSystemST::DownloadFile()" << std::endl;
     bool returnValue{false};
 
     std::string source_file = file.source_path;
-    std::string dest_file = download_folder + "\\" + file.unique_id;
 
     if(std::filesystem::copy_file(
             source_file,
@@ -22,7 +21,6 @@ bool FileSystemST::DownloadFile(FileMetadata file, std::string download_folder)
     {
         std::cout << "Info: File copied from Source = " << source_file
                     << " to Destination = " << dest_file << std::endl;
-        FileMetadataUtils::UpdateLocalFilePath(file.unique_id, dest_file);
         
         returnValue = true;
     }

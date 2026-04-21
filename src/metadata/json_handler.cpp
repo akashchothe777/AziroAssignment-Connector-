@@ -11,7 +11,8 @@ inline void to_json(json& j, const FileMetadata& m)
         {"modified_time", m.last_modified_time},
         {"file_size", m.size},
         {"backup_time", m.last_backup_time},
-        {"destination_path", m.destination_path}
+        {"destination_path", m.destination_path},
+        {"is_download_complete", m.is_download_complete}
     };
 }
 
@@ -25,6 +26,7 @@ inline void from_json(const json& j, FileMetadata& m)
     if (j.contains("file_size")) j.at("file_size").get_to(m.size);
     if (j.contains("backup_time")) j.at("backup_time").get_to(m.last_backup_time);
     if (j.contains("destination_path")) j.at("destination_path").get_to(m.destination_path);
+    if (j.contains("is_download_complete")) j.at("is_download_complete").get_to(m.is_download_complete);
 }
 
 std::string JsonHandler::ToJsonString(std::unordered_map<std::string, FileMetadata>& items_, bool pretty) const 
@@ -36,17 +38,16 @@ std::string JsonHandler::ToJsonString(std::unordered_map<std::string, FileMetada
 void JsonHandler::SaveToFile(std::unordered_map<std::string, FileMetadata>& items_, bool pretty) const 
 {
     std::ofstream ofs(json_file_name, std::ios::binary);
-    if (!ofs) throw std::runtime_error("Failed to open file for writing: " + json_file_name);
+    if (!ofs) throw std::runtime_error("Error: Failed to open file for writing: " + json_file_name);
     ofs << ToJsonString(items_, pretty);
-    if (!ofs) throw std::runtime_error("Failed to write JSON to file: " + json_file_name);
-    std::cout << "Saved metadata to file: " << json_file_name << std::endl;
+    if (!ofs) throw std::runtime_error("Error: Failed to write JSON to file: " + json_file_name);
+    std::cout << "Info: Saved metadata to file: " << json_file_name << std::endl;
 }
 
 void JsonHandler::LoadFromFile(std::unordered_map<std::string, FileMetadata>& items_) 
 {
     std::ifstream ifs(json_file_name, std::ios::binary);
-
-    if (!ifs) throw std::runtime_error("Failed to open file for reading: " + json_file_name);
+    if (!ifs) throw std::runtime_error("Error: Failed to open file for reading: " + json_file_name);
     json j;
     try 
     {
@@ -54,11 +55,11 @@ void JsonHandler::LoadFromFile(std::unordered_map<std::string, FileMetadata>& it
     } 
     catch (const json::parse_error& e) 
     {
-        throw std::runtime_error(std::string("JSON parse error: ") + e.what());
+        throw std::runtime_error(std::string("Error: JSON parse error: ") + e.what());
     }
     catch (const json::exception& e)
     {
-        throw std::runtime_error(std::string("JSON error: ") + e.what());
+        throw std::runtime_error(std::string("Error: JSON error: ") + e.what());
     }
 
     if(j.is_null() || j.empty())

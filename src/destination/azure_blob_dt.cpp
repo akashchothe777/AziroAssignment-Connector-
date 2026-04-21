@@ -229,7 +229,5 @@ bool AzureBlobDT::UploadFile(FileMetadata file_metadata)
     curl_easy_cleanup(curl);
     curl_global_cleanup();
 
-    std::cout << (success ? "\nInfo: Upload SUCCESS\n" : "\nInfo: Upload FAILED\n");
-    
     return success;
 }

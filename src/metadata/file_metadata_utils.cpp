@@ -16,6 +16,7 @@ bool FileMetadataUtils::IsModified(const FileMetadata& file)
     {
         if(itr->second.last_modified_time != file.last_modified_time)
         {
+            std::cout << "Info: File is modified: " << file.unique_id << std::endl;
             is_modified = true;
         }
     }
@@ -31,6 +32,7 @@ bool FileMetadataUtils::IsNew(const FileMetadata& file)
 
     if(itr == file_id_to_metadata.end())
     {
+        std::cout << "Info: File is new: " << file.unique_id << std::endl;
         is_new = true;
     }
 
@@ -47,11 +49,37 @@ std::string FileMetadataUtils::GenerateFileUniqueId(const std::string &filePath)
     return std::to_string(hashValue);
 }
 
-void FileMetadataUtils::UpdateLocalFilePath(std::string file_id, std::string local_filepath)
+bool FileMetadataUtils::IsCompletelyDownloaded(std::string file_id)
 {
-    std::cout << "Info: In FileMetadataUtils::UpdateLocalFilePath()" << std::endl;
+    std::cout << "Info: In FileMetadataUtils::IsCompletelyDownloaded()" << std::endl;
 
-    file_id_to_metadata[file_id].local_path = local_filepath;
+    auto itr = file_id_to_metadata.find(file_id);
+    if (itr != file_id_to_metadata.end())
+    {
+        return itr->second.is_download_complete;
+    }
+    else
+    {
+        std::cout << "Error: FileID not found: " << file_id << std::endl;
+        return false;
+    }
+}
+
+void FileMetadataUtils::UpdateLocalDownloadInfo(std::string file_id, std::string local_filepath)
+{
+    std::cout << "Info: In FileMetadataUtils::UpdateLocalDownloadInfo()" << std::endl;
+
+    auto itr = file_id_to_metadata.find(file_id);
+
+    if(itr != file_id_to_metadata.end())
+    {
+        itr->second.local_path = local_filepath;
+        itr->second.is_download_complete = true;
+    }
+    else
+    {
+        std::cout << "Error: FileID not found: " << file_id << std::endl;
+    }
 }
 
 FileMetadata FileMetadataUtils::GetFileMetadataOfLocalFile(std::string local_filename)
@@ -135,6 +163,15 @@ void FileMetadataUtils::UpdateFileMetadataForUpload(std::string file_id, fs::pat
 {
     std::cout << "Info: In FileMetadataUtils::UpdateFileMetadataForUpload()" << std::endl;
 
-    file_id_to_metadata[file_id].last_backup_time = GetCurrentTimeString();
-    file_id_to_metadata[file_id].destination_path = dest_file_path.string();
+    auto itr = file_id_to_metadata.find(file_id);
+
+    if(itr != file_id_to_metadata.end())
+    {
+        itr->second.last_backup_time = GetCurrentTimeString();
+        itr->second.destination_path = dest_file_path.string();
+    }
+    else
+    {
+        std::cout << "Error: FileID not found: " << file_id << std::endl;
+    }
 }

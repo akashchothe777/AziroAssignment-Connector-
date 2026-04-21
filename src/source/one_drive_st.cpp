@@ -46,13 +46,9 @@ size_t write_callback(void* ptr, size_t size, size_t nmemb, void* stream)
     return fwrite(ptr, size, nmemb, file);
 }
 
-bool OneDriveST::DownloadFile(FileMetadata file_metadata, std::string download_folder)
+bool OneDriveST::DownloadFile(FileMetadata file_metadata, std::string output_file)
 {
     std::cout << "Info: In OneDriveST::DownloadFile()" << std::endl;
-
-    std::string output_file{download_folder};
-
-    output_file = output_file + "\\" + file_metadata.unique_id;
     std::string url = file_metadata.source_path;
 
     if (!EnsureDirectory(output_file)) 
@@ -111,10 +107,6 @@ bool OneDriveST::DownloadFile(FileMetadata file_metadata, std::string download_f
     {
         std::cerr << "Error: CURL error: " << curl_easy_strerror(res) << std::endl;
         return false;
-    }
-    else
-    {
-        FileMetadataUtils::UpdateLocalFilePath(file_metadata.unique_id, output_file);
     }
 
     // Handle HTTP responses
